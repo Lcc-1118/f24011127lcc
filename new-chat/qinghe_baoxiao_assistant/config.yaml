@@ -1,0 +1,45 @@
+# 青禾报销助手 配置文件
+app:
+  name: "青禾报销助手_zxr"
+  version: "0.1.0"
+  description: "智能报销问答助手 - 制度自助查询 + 单据状态授权查询"
+
+# 数据路径
+paths:
+  policy_dir: "data/policies"
+  db_path: "data/reimbursement.db"
+
+# 角色定义
+roles:
+  employee:
+    name: "小林"
+    title: "普通员工"
+    permissions:
+      - query_policy        # 查询有效制度
+      - query_own_document  # 查询本人单据状态（需授权）
+  admin:
+    name: "乔姐"
+    title: "行政专员（制度维护者）"
+    permissions:
+      - query_policy
+      - publish_policy      # 发布制度
+      - withdraw_policy     # 撤回制度
+      - view_all_policies   # 查看所有制度（含已撤回）
+  finance:
+    name: "周敏"
+    title: "财务专员（业务事实核对者）"
+    permissions:
+      - query_policy
+      - view_all_documents  # 查看所有单据
+      - update_document_status  # 更新单据状态
+      - verify_fact         # 核对业务事实
+
+# 单据状态枚举
+document_status:
+  draft: "草稿"
+  dept_approval: "部门审批中"
+  material_review: "材料审核中"
+  finance_review: "财务复核中"
+  payment_processing: "打款处理中"
+  paid: "已打款"
+  returned: "已退回"
