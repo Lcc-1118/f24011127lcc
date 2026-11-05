@@ -24,6 +24,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import uuid
+from pathlib import Path
 
 PASS, FAIL = "✅", "❌"
 results: list[tuple[bool, str]] = []
@@ -227,6 +228,13 @@ def main() -> int:
     if match:
         status, _ = adm.request("POST", f"/admin/policies/{match.group(1)}/delete")
         check(status in (200, 303), "删除测试制度", f"实际 {status}")
+
+    # 同时删掉落盘的上传文件：DB 里只是置 archived，文件留着的话，
+    # 下次 init_db() 会把它当成制度源重新灌进索引，污染检索基线与评测结果。
+    leftover = Path(__file__).resolve().parent.parent / "data" / "policies" / "smoke_policy.md"
+    if leftover.exists():
+        leftover.unlink()
+    check(not leftover.exists(), "清理测试制度文件", str(leftover.name))
 
     # ---------------------------------------------------------------- 汇总
     failed = [label for ok, label in results if not ok]

@@ -24,3 +24,6 @@ venv/
 .idea/
 .DS_Store
 Thumbs.db
+
+# 冒烟测试上传的制度文件（跑脚本会自动删，双保险）
+data/policies/smoke_*.md
