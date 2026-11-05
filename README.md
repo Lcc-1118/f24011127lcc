@@ -14,6 +14,15 @@
 
 ## 一分钟跑起来
 
+**Windows 用户最省事**：进到项目文件夹，双击这两个文件即可（脚本会自己找可用的 Python）：
+
+| 双击 | 作用 |
+| --- | --- |
+| `demo.bat` | 控制台演示 3 个场景，不需要装任何包、不需要 API Key |
+| `start.bat` | 启动 Web 版（员工端 + 管理后台），自动打开浏览器 |
+
+命令行等价写法：
+
 ```bash
 # 1) 控制台演示：零第三方依赖、不需要 API Key
 python quickstart.py
@@ -22,6 +31,10 @@ python quickstart.py
 python -m pip install -r requirements.txt
 python run.py                 # 自动打开 http://127.0.0.1:8000
 ```
+
+> 注意：如果在 Windows 上敲 `python` 弹的是微软商店窗口（说明 PATH 里只有商店占位符，没有真 Python），
+> 就用 `demo.bat` / `start.bat`，或者在命令行里写完整路径，例如
+> `"D:\应用\DSH Desktop\resources\office-runtime\primary-runtime\dependencies\python\python.exe" run.py`。
 
 账号：
 
@@ -34,6 +47,8 @@ python run.py                 # 自动打开 http://127.0.0.1:8000
 
 ```
 f24011127lcc/
+├── demo.bat                   # ★ Windows 双击：控制台演示（零依赖）
+├── start.bat                  # ★ Windows 双击：启动 Web 版
 ├── quickstart.py              # 一键演示（控制台 3 场景 / --web 起服务 / --interactive 交互）
 ├── run.py                     # Web 启动器（依赖自检、--reset、自动开浏览器）
 ├── requirements.txt
