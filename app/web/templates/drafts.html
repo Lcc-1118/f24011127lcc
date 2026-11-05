@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}我的草稿{% endblock %}
+{% block nav_drafts %}active{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>我的草稿</h1>
+    <p class="sub">由对话生成、经你确认后才落库的报销单草稿。</p>
+  </div>
+  <a class="btn btn-ghost" href="/chat">回到问答</a>
+</div>
+
+{% for item in drafts %}
+{% set d = item.draft %}
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+    <h2>草稿 #{{ d.id }}　<span class="muted" style="font-weight:400;font-size:13px;">
+      {{ d.trip_city or '未填城市' }} · {{ d.trip_start or '—' }} ~ {{ d.trip_end or '—' }}</span></h2>
+    <span class="badge {{ 'ok' if d.status == 'draft' else 'warn' }}">
+      {{ {'draft': '待提交', 'submitted': '已提交', 'rejected': '已驳回'}.get(d.status, d.status) }}
+    </span>
+  </div>
+  <table class="table">
+    <thead><tr><th>科目</th><th class="num">金额</th><th>发票号</th><th>发票日期</th><th>备注</th></tr></thead>
+    <tbody>
+      {% for it in item['items'] %}
+      <tr>
+        <td>{{ it.category }}</td>
+        <td class="num">¥{{ '%.2f' % it.amount }}</td>
+        <td class="mono">{{ it.invoice_no or '—' }}</td>
+        <td>{{ it.invoice_date or '—' }}</td>
+        <td class="muted">{{ it.note or '' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr><th>合计</th><th class="num">¥{{ '%.2f' % d.total_amount }}</th><th colspan="3"></th></tr>
+    </tfoot>
+  </table>
+  <p class="muted" style="margin:8px 0 0;font-size:12px;">创建于 {{ d.created_at }}</p>
+</div>
+{% else %}
+<div class="card">
+  <p class="muted" style="margin:0;">还没有草稿。去 <a href="/chat">制度问答</a> 里说一句"帮我报上个月去上海的差旅"，我会先校验发票再生成草稿。</p>
+</div>
+{% endfor %}
+{% endblock %}

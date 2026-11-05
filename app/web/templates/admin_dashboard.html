@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}管理概览{% endblock %}
+{% block nav_admin %}active{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>管理概览</h1>
+    <p class="sub">知识库、对话量、Agent 工具调用的整体运行情况。</p>
+  </div>
+  <span class="badge {{ 'ok' if has_llm else 'warn' }}">{{ model_mode }}</span>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="k">制度文档</div><div class="v">{{ stats.docs }} <small>/ {{ stats.chunks }} 段</small></div></div>
+  <div class="stat"><div class="k">AI 回答数</div><div class="v">{{ stats.messages }}</div></div>
+  <div class="stat"><div class="k">会话数</div><div class="v">{{ stats.sessions }}</div></div>
+  <div class="stat"><div class="k">报销草稿</div><div class="v">{{ stats.drafts }} <small>/ {{ pending_drafts }} 待提交</small></div></div>
+  <div class="stat"><div class="k">工具调用</div><div class="v">{{ stats.tool_calls }}</div></div>
+  <div class="stat"><div class="k">待复核标记</div><div class="v">{{ stats.flags }}</div></div>
+</div>
+
+<div class="two-col" style="margin-top:16px;">
+  <div class="card">
+    <h2>最近 Agent 决策</h2>
+    <table class="table">
+      <thead><tr><th>时间</th><th>用户</th><th>轮次</th><th>工具</th><th class="num">耗时</th></tr></thead>
+      <tbody>
+        {% for r in recent %}
+        <tr>
+          <td class="muted mono">{{ r.created_at }}</td>
+          <td>{{ r.display_name }}</td>
+          <td>{{ r.round_no }}</td>
+          <td class="mono">{{ r.tool_name }}</td>
+          <td class="num">{{ r.duration_ms }} ms</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="muted">还没有调用记录，去员工端问一句话试试。</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>工具调用分布</h2>
+    <table class="table">
+      <thead><tr><th>工具</th><th class="num">次数</th><th class="num">平均耗时</th></tr></thead>
+      <tbody>
+        {% for t in per_tool %}
+        <tr><td class="mono">{{ t.tool_name }}</td><td class="num">{{ t.n }}</td><td class="num">{{ t.avg_ms }} ms</td></tr>
+        {% else %}
+        <tr><td colspan="3" class="muted">暂无数据</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p class="muted" style="font-size:12px;margin:12px 0 0;">
+      单轮最多 {{ max_rounds }} 次工具决策；create_draft 前必须经过 validate_invoice 与员工确认。
+    </p>
+  </div>
+</div>
+{% endblock %}

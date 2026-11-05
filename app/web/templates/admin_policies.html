@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}制度知识库{% endblock %}
+{% block nav_policies %}active{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>制度知识库</h1>
+    <p class="sub">上传 markdown / txt / pdf → 自动切片（500 字，重叠 50）→ 向量化检索生效。</p>
+  </div>
+</div>
+
+{% if msg %}<div class="alert ok">{{ msg }}</div>{% endif %}
+
+<div class="card">
+  <h2>上传制度文件</h2>
+  <form method="post" action="/admin/policies" enctype="multipart/form-data">
+    <label class="field"><span>选择文件（.md / .txt / .pdf）</span>
+      <input class="input" type="file" name="file" accept=".md,.txt,.pdf,.markdown" required></label>
+    <div class="form-row">
+      <label class="field"><span>标题（留空自动取一级标题）</span>
+        <input class="input" name="title" placeholder="差旅与报销管理制度"></label>
+      <label class="field"><span>版本号</span>
+        <input class="input" name="version" value="V1.0"></label>
+      <label class="field"><span>生效日期</span>
+        <input class="input" type="date" name="effective_date"></label>
+    </div>
+    <button class="btn btn-primary" type="submit">上传并切片入库</button>
+    <p class="muted" style="font-size:12px;margin:10px 0 0;">
+      同名文件再次上传会把这版归档（status=archived），保证"当时按哪一版制度判的"可追溯。
+    </p>
+  </form>
+</div>
+
+<div class="card">
+  <h2>已入库文档</h2>
+  <table class="table">
+    <thead>
+      <tr><th>ID</th><th>标题</th><th>文件</th><th>版本</th><th>生效日</th><th class="num">切片</th><th>状态</th><th>上传人</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for d in docs %}
+      <tr>
+        <td class="mono">{{ d.id }}</td>
+        <td><a href="/admin/policies/{{ d.id }}">{{ d.title }}</a></td>
+        <td class="mono muted">{{ d.filename }}</td>
+        <td>{{ d.version }}</td>
+        <td>{{ d.effective_date }}</td>
+        <td class="num">{{ d.n_chunks }}</td>
+        <td>
+          <span class="badge {{ 'ok' if d.status == 'active' else 'warn' }}">
+            {{ '生效中' if d.status == 'active' else '已归档' }}</span>
+        </td>
+        <td class="muted">{{ d.uploaded_by or '—' }}</td>
+        <td style="white-space:nowrap;">
+          <form method="post" action="/admin/policies/{{ d.id }}/rechunk" style="display:inline;">
+            <button class="btn btn-ghost btn-sm" type="submit">重建切片</button>
+          </form>
+          <form method="post" action="/admin/policies/{{ d.id }}/delete" style="display:inline;"
+                onsubmit="return confirm('删除后该文档及切片立即从检索中消失，确定？');">
+            <button class="btn btn-danger btn-sm" type="submit">删除</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="9" class="muted">知识库还是空的，先上传一份制度文件。</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

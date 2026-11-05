@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}无权限{% endblock %}
+
+{% block content %}
+<div class="forbidden card">
+  <h1>403 · 需要管理员权限</h1>
+  <p class="muted">当前账号（{{ user.display_name if user else '未登录' }}）是
+    {{ '管理员' if user and user.role == 'admin' else '普通员工' }}，
+    无法访问管理后台。</p>
+  <p><a class="btn btn-primary" href="/chat">回到制度问答</a></p>
+</div>
+{% endblock %}

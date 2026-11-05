@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}提示词模板{% endblock %}
+{% block nav_prompts %}active{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>提示词模板</h1>
+    <p class="sub">存在数据库里，保存后下一轮对话立即生效——不用改代码、不用重启服务。</p>
+  </div>
+</div>
+
+{% if msg %}<div class="alert ok">{{ msg }}</div>{% endif %}
+
+{% for p in prompts %}
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;">
+    <h2>{{ p.name }}　<span class="mono muted" style="font-size:12px;">key={{ p.key }}</span></h2>
+    <span class="badge">v{{ p.version }}</span>
+  </div>
+  <p class="muted" style="font-size:12px;margin:0 0 10px;">
+    最后修改：{{ p.updated_by or '系统种子' }} · {{ p.updated_at }}
+  </p>
+  <form method="post" action="/admin/prompts/{{ p.key }}">
+    <textarea name="content" rows="8" style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;">{{ p.content }}</textarea>
+    <div style="margin-top:10px;display:flex;gap:10px;align-items:center;">
+      <button class="btn btn-primary" type="submit">保存并立即生效</button>
+      <span class="muted" style="font-size:12px;">
+        约束模型"不得跳过校验直接建单"的规则应写在这里；代码里的硬闸门是第二道防线。
+      </span>
+    </div>
+  </form>
+</div>
+{% endfor %}
+{% endblock %}

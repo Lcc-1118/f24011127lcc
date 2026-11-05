@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Agent 日志{% endblock %}
+{% block nav_logs %}active{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Agent 决策日志</h1>
+    <p class="sub">每轮"决策 → 执行工具 → 结果回填"都落库（工具名、参数、耗时、结果摘要），用于复盘与调优。</p>
+  </div>
+</div>
+
+<div class="card">
+  <form class="filter-bar" method="get" action="/admin/logs">
+    <label class="field"><span>会话 ID</span>
+      <input class="input" name="session_id" value="{{ session_id }}" placeholder="例如 12"></label>
+    <button class="btn btn-primary" type="submit">筛选</button>
+    <a class="btn btn-ghost" href="/admin/logs">重置</a>
+  </form>
+
+  <table class="table">
+    <thead>
+      <tr><th>#</th><th>时间</th><th>会话</th><th>用户</th><th>轮次</th><th>工具</th><th>参数</th><th>结果摘要</th><th class="num">耗时</th></tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      <tr>
+        <td class="mono muted">{{ r.id }}</td>
+        <td class="muted mono" style="white-space:nowrap;">{{ r.created_at }}</td>
+        <td class="mono">{{ r.session_id }}</td>
+        <td>{{ r.display_name }}</td>
+        <td>{{ r.round_no }}</td>
+        <td class="mono">{{ r.tool_name }}</td>
+        <td class="mono muted" style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+            title="{{ r.args_json }}">{{ r.args_json }}</td>
+        <td class="muted" style="max-width:320px;">{{ r.result_summary }}</td>
+        <td class="num">{{ r.duration_ms }} ms</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="9" class="muted">还没有日志。</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

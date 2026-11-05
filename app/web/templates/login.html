@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>登录 · 报销助手</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="login-body">
+  <div class="login-card">
+    <h1>报销助手</h1>
+    <p class="sub">{{ company_name }} · 制度问答与报销单生成</p>
+
+    {% if error %}
+    <div class="alert err">{{ error }}</div>
+    {% endif %}
+
+    <form method="post" action="/login">
+      <input type="hidden" name="next" value="{{ next }}">
+      <label class="field">
+        <span>账号</span>
+        <input class="input" name="username" value="{{ username or '' }}" autocomplete="username" autofocus required>
+      </label>
+      <label class="field">
+        <span>密码</span>
+        <input class="input" type="password" name="password" autocomplete="current-password" required>
+      </label>
+      <button class="btn btn-primary" type="submit">登录</button>
+    </form>
+
+    <div class="seed-hint">
+      <strong>演示账号</strong><br>
+      管理员：{{ seed_admin }} / admin123（可维护制度与提示词、看审计）<br>
+      员工：{{ seed_employee }} / emp123（问答 + 发起报销）
+    </div>
+  </div>
+</body>
+</html>

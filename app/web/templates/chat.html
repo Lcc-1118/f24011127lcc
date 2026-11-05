@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}制度问答{% endblock %}
+{% block nav_chat %}active{% endblock %}
+{% block body_class %}chat-body{% endblock %}
+
+{% block content %}
+<div class="chat-shell">
+  {# 左：会话列表。会话按用户隔离，删除即级联删消息 #}
+  <section class="session-col">
+    <button class="btn btn-primary btn-block" id="new-session">＋ 新建会话</button>
+    <div class="session-list" id="session-list">
+      {% for s in sessions %}
+      <div class="session-item" data-id="{{ s.id }}">
+        <span class="session-title" title="{{ s.title }}">{{ s.title }}</span>
+        <span class="session-meta">{{ s.n_msgs }} 条</span>
+      </div>
+      {% else %}
+      <p class="empty-hint">还没有会话，点上面的按钮开始。</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  {# 右：对话区 #}
+  <section class="chat-col">
+    <header class="chat-head">
+      <div>
+        <h1 id="chat-title">制度问答</h1>
+        <p class="sub">只依据公司报销制度回答，涉及金额与条文会附引用来源。</p>
+      </div>
+      <div class="chat-head-actions">
+        <span class="badge" id="mode-badge">{{ 'LLM 在线' if has_llm else '离线规则引擎' }}</span>
+      </div>
+    </header>
+
+    <div class="messages" id="messages">
+      <div class="welcome">
+        <h2>你好，我是报销助手 👋</h2>
+        <p>可以问我差旅标准、发票要求、审批流程，也可以直接说"帮我报上个月去北京的差旅"。</p>
+        <div class="chips">
+          <button class="chip" data-q="出差上海3天住宿标准是多少">出差上海 3 天住宿标准是多少？</button>
+          <button class="chip" data-q="发票抬头和税号有什么要求">发票抬头和税号有什么要求？</button>
+          <button class="chip" data-q="这个发票能报吗，发票号 12345678，金额 480 元，日期 2026-10-20">这张发票能报吗？</button>
+          <button class="chip" data-q="帮我报上个月去北京的差旅，发票号 87654321，金额 480 元，日期 2026-10-20">帮我报北京差旅</button>
+          <button class="chip" data-q="报销单最晚什么时候提交">报销时效是多久？</button>
+        </div>
+      </div>
+    </div>
+
+    {# 建单前的人工闸门：草稿内容在这里给员工确认 #}
+    <div class="confirm-slot" id="confirm-slot" hidden></div>
+
+    <form class="composer" id="composer" autocomplete="off">
+      <textarea id="question" rows="1" placeholder="描述你的报销问题，例如：出差上海3天住宿标准是多少？（Enter 发送，Shift+Enter 换行）"></textarea>
+      <button class="btn btn-primary" id="send" type="submit">发送</button>
+    </form>
+    <p class="disclaimer">回答依据公司制度生成，最终以财务审核为准。金额与条款可点开引用核对原文。</p>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/chat.js"></script>
+{% endblock %}

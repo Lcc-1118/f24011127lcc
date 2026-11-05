@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}对话审计{% endblock %}
+{% block nav_audit %}active{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>对话审计</h1>
+    <p class="sub">按员工 / 时间筛选问答记录，命中违规关键词的会先标黄，由人工判断后留痕。</p>
+  </div>
+</div>
+
+{% if msg %}<div class="alert ok">{{ msg }}</div>{% endif %}
+
+<div class="card">
+  <form class="filter-bar" method="get" action="/admin/audit">
+    <label class="field"><span>员工</span>
+      <select class="input" name="user_id">
+        <option value="">全部</option>
+        {% for u in users %}
+        <option value="{{ u.id }}" {% if user_id == u.id|string %}selected{% endif %}>{{ u.display_name }}（{{ u.department }}）</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label class="field"><span>起始日期</span><input class="input" type="date" name="date_from" value="{{ date_from }}"></label>
+    <label class="field"><span>截止日期</span><input class="input" type="date" name="date_to" value="{{ date_to }}"></label>
+    <label class="field" style="flex:0 0 auto;"><span>只看已标记</span>
+      <select class="input" name="only_flagged">
+        <option value="">否</option>
+        <option value="1" {% if only_flagged %}selected{% endif %}>是</option>
+      </select>
+    </label>
+    <button class="btn btn-primary" type="submit">筛选</button>
+    <a class="btn btn-ghost" href="/admin/audit">重置</a>
+  </form>
+
+  <table class="table">
+    <thead>
+      <tr><th>时间</th><th>员工</th><th>角色</th><th>内容</th><th>命中</th><th>标记</th><th>操作</th></tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      <tr>
+        <td class="muted mono" style="white-space:nowrap;">{{ r.created_at }}</td>
+        <td>{{ r.display_name }}<div class="muted" style="font-size:11.5px;">{{ r.department }}</div></td>
+        <td>
+          {% if r.role == 'user' %}<span class="badge">员工提问</span>
+          {% else %}<span class="badge ok">AI 回答</span>{% endif %}
+        </td>
+        <td class="audit-msg">{{ r.content }}</td>
+        <td>
+          {% for w in r.suspicion %}<span class="tag">{{ w }}</span>{% endfor %}
+          {% if r.n_flags %}<span class="badge danger">已标记 ×{{ r.n_flags }}</span>{% endif %}
+        </td>
+        <td>
+          {% if r.agent_meta and r.agent_meta.tools %}
+          <span class="mono muted" style="font-size:11.5px;">{{ r.agent_meta.tools|join(' → ') }}</span>
+          {% endif %}
+        </td>
+        <td>
+          <form method="post" action="/admin/audit/{{ r.id }}/flag" style="display:flex;gap:6px;">
+            <input class="input" name="reason" placeholder="标记原因" style="padding:4px 8px;font-size:12px;min-width:110px;">
+            <button class="btn btn-ghost btn-sm" type="submit">标记</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="muted">没有符合条件的记录。</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h2>待复核标记</h2>
+  <table class="table">
+    <thead><tr><th>时间</th><th>标记人</th><th>原因</th><th>状态</th><th>操作</th></tr></thead>
+    <tbody>
+      {% for f in flags %}
+      <tr>
+        <td class="muted mono">{{ f.created_at }}</td>
+        <td>{{ f.flagged_by }}</td>
+        <td>{{ f.reason }}</td>
+        <td><span class="badge {{ 'warn' if f.status == 'open' else 'ok' }}">{{ '待复核' if f.status == 'open' else '已处理' }}</span></td>
+        <td>
+          {% if f.status == 'open' %}
+          <form method="post" action="/admin/audit/flag/{{ f.id }}/resolve">
+            <button class="btn btn-ghost btn-sm" type="submit">标记已处理</button>
+          </form>
+          {% else %}—{% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="muted">暂无标记。</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

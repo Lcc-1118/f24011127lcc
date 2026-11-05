@@ -1,0 +1,26 @@
+# 运行时产物：数据库、索引缓存、日志
+data/*.db
+data/*.db-wal
+data/*.db-shm
+db/
+*.sqlite3
+prototype/data/index/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 本地配置（含 API Key，绝不入库）
+.env
+.env.local
+
+# 评测/报告产物：report.json 刻意入库，作为"30/30 通过"的可复查证据
+
+# 编辑器/系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

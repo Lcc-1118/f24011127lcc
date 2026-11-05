@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}报销助手{% endblock %} · {{ company_name }}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+<div class="layout">
+  {# 侧边栏：员工看到"问答/我的草稿"，管理员多一个"管理后台"分区 #}
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">报</span>
+      <div>
+        <div class="brand-name">报销助手</div>
+        <div class="brand-sub">{{ company_name }}</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a class="nav-item {% block nav_chat %}{% endblock %}" href="/chat">💬 制度问答</a>
+      <a class="nav-item {% block nav_drafts %}{% endblock %}" href="/my/drafts">🧾 我的草稿</a>
+      {% if user and user.role == 'admin' %}
+      <div class="nav-group">管理后台</div>
+      <a class="nav-item {% block nav_admin %}{% endblock %}" href="/admin">📊 概览</a>
+      <a class="nav-item {% block nav_policies %}{% endblock %}" href="/admin/policies">📚 制度知识库</a>
+      <a class="nav-item {% block nav_prompts %}{% endblock %}" href="/admin/prompts">🛠 提示词模板</a>
+      <a class="nav-item {% block nav_audit %}{% endblock %}" href="/admin/audit">🔍 对话审计</a>
+      <a class="nav-item {% block nav_logs %}{% endblock %}" href="/admin/logs">📝 Agent 日志</a>
+      {% endif %}
+    </nav>
+
+    <div class="sidebar-foot">
+      {% if user %}
+      <div class="who">
+        <div class="who-name">{{ user.display_name }}</div>
+        <div class="who-meta">{{ user.department }} · {{ user.job_level }} · {{ '管理员' if user.role == 'admin' else '员工' }}</div>
+      </div>
+      <a class="logout" href="/logout">退出登录</a>
+      {% endif %}
+      <div class="mode-tag {{ 'online' if has_llm else 'offline' }}">
+        {{ 'LLM 在线' if has_llm else '离线规则引擎' }}
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    {% block content %}{% endblock %}
+  </main>
+</div>
+{% block scripts %}{% endblock %}
+</body>
+</html>

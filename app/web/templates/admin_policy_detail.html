@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}制度详情{% endblock %}
+{% block nav_policies %}active{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>{{ doc.title }}</h1>
+    <p class="sub">
+      文件 {{ doc.filename }} · 版本 {{ doc.version }} · 生效 {{ doc.effective_date }} ·
+      {{ chunks|length }} 个切片 · {{ doc.status }}
+    </p>
+  </div>
+  <a class="btn btn-ghost" href="/admin/policies">返回列表</a>
+</div>
+
+<div class="two-col">
+  <div class="card">
+    <h2>切片结果（检索的最小单位）</h2>
+    {% for c in chunks %}
+    <div style="padding:10px 0;border-bottom:1px solid var(--line);">
+      <div style="font-size:12.5px;color:var(--ink-3);">
+        #{{ c.ord }} · {{ c.heading }} · {{ c.n_chars }} 字
+      </div>
+      <p style="margin:4px 0 0;font-size:13px;white-space:pre-wrap;">{{ c.text }}</p>
+    </div>
+    {% else %}
+    <p class="muted">没有切片，点列表页的"重建切片"。</p>
+    {% endfor %}
+  </div>
+
+  <div class="card">
+    <h2>原文</h2>
+    <pre class="doc">{{ doc.content }}</pre>
+  </div>
+</div>
+{% endblock %}

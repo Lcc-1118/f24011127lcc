@@ -1,0 +1,12 @@
+# Web 层依赖（控制台演示 quickstart.py 不需要这些，纯标准库即可跑）
+# 安装：python -m pip install -r requirements.txt
+fastapi>=0.110,<1.0
+uvicorn>=0.27,<1.0
+jinja2>=3.1,<4.0
+python-multipart>=0.0.9          # 上传制度文件（multipart/form-data）
+pypdf>=4.0                       # 管理员上传 PDF 制度时抽取文本
+
+# 以下为"可选增强"，不装也能跑：
+# numpy>=1.26                    # 原型 prototype/reimbursement_assistant.py 需要
+# jieba                          # 更准的中文分词（不装则用 bigram 兜底）
+# faiss-cpu                      # 更大语料时的向量检索（不装则 numpy 精确内积）
