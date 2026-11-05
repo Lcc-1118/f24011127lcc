@@ -9,6 +9,9 @@
 - 存储：SQLite（10 张表），零 ORM
 - 依赖极少：FastAPI 只用于 Web 层；检索/规则/Agent/SQLite 全部标准库
 
+> 仓库地址：<https://github.com/Lcc-1118/f24011127lcc>（main 分支，60 个项目文件）
+> 如果只想看"能跑起来"的证据：`python quickstart.py`，30 秒出结果，不需要装任何包、不需要 API Key。
+
 ## 一分钟跑起来
 
 ```bash
