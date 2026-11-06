@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>改造后：提交前就把问题解决 · 某某科技报销助手</title>
+<style>
+  :root { --navy:#1F3B6B; --blue:#2E6DA4; --teal:#2A9D8F; --amber:#E9A23B; --red:#C0504D;
+           --line:#D5DEE9; --bg:#F6F8FB; --ink:#222; --grey:#6E6E6E; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif; }
+  .page { max-width:1080px; margin:0 auto; padding:44px 40px 60px; background:#fff;
+           box-shadow:0 2px 18px rgba(31,59,107,.06); }
+  .eyebrow { color:var(--blue); font-size:13px; letter-spacing:.18em; }
+  h1 { font-size:30px; color:var(--navy); margin:6px 0 6px; }
+  .sub { color:var(--grey); font-size:14px; }
+  .rule { height:3px; background:var(--navy); margin:18px 0 22px; }
+  .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:18px 0 26px; }
+  .kpi { background:#EEF3FA; border-top:3px solid var(--navy); padding:12px 14px; }
+  .kpi .v { font-size:22px; font-weight:700; color:var(--navy); }
+  .kpi .l { font-size:12px; margin-top:2px; }
+  .kpi .s { font-size:11px; color:var(--grey); margin-top:2px; }
+  ol.flow { list-style:none; margin:0; padding:0; }
+  .step { display:grid; grid-template-columns:58px 1fr 260px; gap:14px; position:relative;
+           background:#fff; border:1px solid var(--line); border-radius:8px; padding:12px 14px;
+           margin-bottom:26px; }
+  .step::after { content:""; position:absolute; left:42px; bottom:-26px; height:26px;
+                  border-left:2px solid var(--line); }
+  .step:last-child::after { display:none; }
+  .step .no { width:34px; height:34px; border-radius:50%; background:var(--navy); color:#fff;
+               display:flex; align-items:center; justify-content:center; font-weight:700; }
+  .step .head { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .step .name { font-size:16px; font-weight:700; color:var(--navy); }
+  .step .actor { font-size:11px; color:var(--grey); background:#F0F3F7; padding:1px 8px; border-radius:10px; }
+  .step .tag { font-size:11px; color:#fff; padding:1px 8px; border-radius:10px; background:var(--blue); }
+  .step .desc { font-size:13px; color:#444; margin-top:6px; line-height:1.6; }
+  .step .anno { font-size:12px; color:var(--grey); border-left:2px dashed var(--line); padding-left:12px;
+                 display:flex; align-items:center; line-height:1.6; }
+  .step.ai { border-color:var(--blue); background:#F7FBFF; }
+  .step.ai .tag { background:var(--blue); }
+  .step.ai .anno { color:var(--blue); border-color:#BBD3EA; }
+  .step.human { border-color:var(--amber); background:#FFFBF3; }
+  .step.human .tag { background:var(--amber); }
+  .step.human .anno { color:#A9700F; border-color:#F0D6A8; }
+  .step.pain { border-color:var(--red); background:#FFF8F8; }
+  .step.pain .tag { background:var(--red); }
+  .step.pain .anno { color:var(--red); border-color:#EBC3C3; }
+  .legend { display:flex; gap:18px; font-size:12px; color:var(--grey); margin:4px 0 18px; }
+  .dot { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:6px; }
+  .note { background:#F5F7FA; border-left:4px solid var(--navy); padding:12px 16px;
+           font-size:12px; color:#555; line-height:1.7; margin-top:26px; }
+  @media print { body { background:#fff; } .page { box-shadow:none; padding:0; } }
+  @media (max-width:760px) { .step { grid-template-columns:48px 1fr; } .anno { grid-column:2; border-left:none; padding-left:0; } .kpis { grid-template-columns:repeat(2,1fr); } }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="eyebrow">某某科技有限公司 · 报销助手智能体系统</div>
+  <h1>改造后：提交前就把问题解决</h1>
+  <div class="sub">目标流程（To-Be）· AI 预检前置 · 两处人工闸门 · 不改变审批责任</div>
+  <div class="rule"></div>
+  <div class="kpis"><div class="kpi"><div class="v">≤ 8%</div><div class="l">目标退单率</div><div class="s">现状 21.7%</div></div><div class="kpi"><div class="v">≤ 6 分钟</div><div class="l">单均审核</div><div class="s">现状 11.5 分钟</div></div><div class="kpi"><div class="v">≤ 12 分钟</div><div class="l">员工填单</div><div class="s">现状 28 分钟</div></div><div class="kpi"><div class="v">≤ 5.5 天</div><div class="l">目标闭环</div><div class="s">现状 9.4 天</div></div></div>
+  <div class="legend">
+    <span><i class="dot" style="background:#fff;border:1px solid #D5DEE9"></i>人工流程</span>
+    <span><i class="dot" style="background:#2E6DA4"></i>AI 介入</span>
+    <span><i class="dot" style="background:#E9A23B"></i>人工确认 / 责任点</span>
+    <span><i class="dot" style="background:#C0504D"></i>痛点环节</span>
+  </div>
+  <ol class="flow">
+      <li class="step ai">
+        <div class="no">1</div>
+        <div class="body">
+          <div class="head"><span class="name">对话提问</span><span class="actor">员工</span><span class="tag">AI</span></div>
+          <div class="desc">员工在企业微信/浏览器问“上海住宿多少”“这张票能报吗”</div>
+        </div>
+        <div class="anno">30 秒内给出条款、版本与金额计算</div>
+      </li>
+      <li class="step ai">
+        <div class="no">2</div>
+        <div class="body">
+          <div class="head"><span class="name">制度与标准解释</span><span class="actor">AI 助手</span><span class="tag">AI</span></div>
+          <div class="desc">混合检索 + 引用 + 弃答；现行版本 V3.2</div>
+        </div>
+        <div class="anno">回答带条款号；无依据明确说“未找到”</div>
+      </li>
+      <li class="step ai">
+        <div class="no">3</div>
+        <div class="body">
+          <div class="head"><span class="name">发票预检</span><span class="actor">规则引擎</span><span class="tag">AI</span></div>
+          <div class="desc">抬头/税号/查重/时效/科目/标准六项代码判定</div>
+        </div>
+        <div class="anno">逐条问题 + 修改建议；单票 < 300ms</div>
+      </li>
+      <li class="step ai">
+        <div class="no">4</div>
+        <div class="body">
+          <div class="head"><span class="name">草稿生成</span><span class="actor">AI 助手</span><span class="tag">AI</span></div>
+          <div class="desc">多轮补齐要素，生成费用明细、审批链路、附件清单</div>
+        </div>
+        <div class="anno">填单 28 → 12 分钟；缺失要素主动追问</div>
+      </li>
+      <li class="step human">
+        <div class="no">5</div>
+        <div class="body">
+          <div class="head"><span class="name">人工确认（闸门）</span><span class="actor">员工</span><span class="tag">人工</span></div>
+          <div class="desc">员工核对金额/审批人/附件，确认后才落库</div>
+        </div>
+        <div class="anno">未确认 0 条落库；误建单成本前置拦截</div>
+      </li>
+      <li class="step">
+        <div class="no">6</div>
+        <div class="body">
+          <div class="head"><span class="name">提交与审批</span><span class="actor">员工 → 主管</span></div>
+          <div class="desc">草稿复制/推送到 OA（本期不真实提交）</div>
+        </div>
+        <div class="anno">审批链路随单展示；≥5,000 提示部门负责人</div>
+      </li>
+      <li class="step human">
+        <div class="no">7</div>
+        <div class="body">
+          <div class="head"><span class="name">财务审核</span><span class="actor">财务</span><span class="tag">人工</span></div>
+          <div class="desc">按预审问题清单复核，重点看例外项</div>
+        </div>
+        <div class="anno">单均 11.5 → 6 分钟；审核责任不变</div>
+      </li>
+      <li class="step">
+        <div class="no">8</div>
+        <div class="body">
+          <div class="head"><span class="name">付款</span><span class="actor">财务/出纳</span></div>
+          <div class="desc">复核通过后进入付款排期</div>
+        </div>
+        <div class="anno">闭环 9.4 → 5.5 天（目标）</div>
+      </li>
+      <li class="step">
+        <div class="no">9</div>
+        <div class="body">
+          <div class="head"><span class="name">归档与审计</span><span class="actor">系统</span></div>
+          <div class="desc">提案留痕：条款版本、工具调用、确认人、改动</div>
+        </div>
+        <div class="anno">可重建每次建议；发票号掩码展示</div>
+      </li>
+  </ol>
+  <div class="note">读图说明：蓝色为 AI 介入点，橙色为人工确认/责任点。系统只产出草稿，不向 OA/ERP 真实提交；员工确认与财务审核是两道不可绕过的闸门。</div>
+</div>
+</body>
+</html>

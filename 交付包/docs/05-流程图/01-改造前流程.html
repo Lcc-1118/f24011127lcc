@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>改造前：一张单要过九道手 · 某某科技报销助手</title>
+<style>
+  :root { --navy:#1F3B6B; --blue:#2E6DA4; --teal:#2A9D8F; --amber:#E9A23B; --red:#C0504D;
+           --line:#D5DEE9; --bg:#F6F8FB; --ink:#222; --grey:#6E6E6E; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif; }
+  .page { max-width:1080px; margin:0 auto; padding:44px 40px 60px; background:#fff;
+           box-shadow:0 2px 18px rgba(31,59,107,.06); }
+  .eyebrow { color:var(--blue); font-size:13px; letter-spacing:.18em; }
+  h1 { font-size:30px; color:var(--navy); margin:6px 0 6px; }
+  .sub { color:var(--grey); font-size:14px; }
+  .rule { height:3px; background:var(--navy); margin:18px 0 22px; }
+  .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:18px 0 26px; }
+  .kpi { background:#EEF3FA; border-top:3px solid var(--navy); padding:12px 14px; }
+  .kpi .v { font-size:22px; font-weight:700; color:var(--navy); }
+  .kpi .l { font-size:12px; margin-top:2px; }
+  .kpi .s { font-size:11px; color:var(--grey); margin-top:2px; }
+  ol.flow { list-style:none; margin:0; padding:0; }
+  .step { display:grid; grid-template-columns:58px 1fr 260px; gap:14px; position:relative;
+           background:#fff; border:1px solid var(--line); border-radius:8px; padding:12px 14px;
+           margin-bottom:26px; }
+  .step::after { content:""; position:absolute; left:42px; bottom:-26px; height:26px;
+                  border-left:2px solid var(--line); }
+  .step:last-child::after { display:none; }
+  .step .no { width:34px; height:34px; border-radius:50%; background:var(--navy); color:#fff;
+               display:flex; align-items:center; justify-content:center; font-weight:700; }
+  .step .head { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .step .name { font-size:16px; font-weight:700; color:var(--navy); }
+  .step .actor { font-size:11px; color:var(--grey); background:#F0F3F7; padding:1px 8px; border-radius:10px; }
+  .step .tag { font-size:11px; color:#fff; padding:1px 8px; border-radius:10px; background:var(--blue); }
+  .step .desc { font-size:13px; color:#444; margin-top:6px; line-height:1.6; }
+  .step .anno { font-size:12px; color:var(--grey); border-left:2px dashed var(--line); padding-left:12px;
+                 display:flex; align-items:center; line-height:1.6; }
+  .step.ai { border-color:var(--blue); background:#F7FBFF; }
+  .step.ai .tag { background:var(--blue); }
+  .step.ai .anno { color:var(--blue); border-color:#BBD3EA; }
+  .step.human { border-color:var(--amber); background:#FFFBF3; }
+  .step.human .tag { background:var(--amber); }
+  .step.human .anno { color:#A9700F; border-color:#F0D6A8; }
+  .step.pain { border-color:var(--red); background:#FFF8F8; }
+  .step.pain .tag { background:var(--red); }
+  .step.pain .anno { color:var(--red); border-color:#EBC3C3; }
+  .legend { display:flex; gap:18px; font-size:12px; color:var(--grey); margin:4px 0 18px; }
+  .dot { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:6px; }
+  .note { background:#F5F7FA; border-left:4px solid var(--navy); padding:12px 16px;
+           font-size:12px; color:#555; line-height:1.7; margin-top:26px; }
+  @media print { body { background:#fff; } .page { box-shadow:none; padding:0; } }
+  @media (max-width:760px) { .step { grid-template-columns:48px 1fr; } .anno { grid-column:2; border-left:none; padding-left:0; } .kpis { grid-template-columns:repeat(2,1fr); } }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="eyebrow">某某科技有限公司 · 报销助手智能体系统</div>
+  <h1>改造前：一张单要过九道手</h1>
+  <div class="sub">现状流程（As-Is）· 9 个节点 · 平均 9.4 天闭环 · 退单率 21.7%</div>
+  <div class="rule"></div>
+  <div class="kpis"><div class="kpi"><div class="v">21.7%</div><div class="l">退单率</div><div class="s">63% 与发票有关</div></div><div class="kpi"><div class="v">11.5 分钟</div><div class="l">单均审核</div><div class="s">复杂单 30 分钟</div></div><div class="kpi"><div class="v">28 分钟</div><div class="l">员工填单</div><div class="s">跨 4 个系统</div></div><div class="kpi"><div class="v">9.4 天</div><div class="l">平均闭环</div><div class="s">垫款 4,200 元</div></div></div>
+  <div class="legend">
+    <span><i class="dot" style="background:#fff;border:1px solid #D5DEE9"></i>人工流程</span>
+    <span><i class="dot" style="background:#2E6DA4"></i>AI 介入</span>
+    <span><i class="dot" style="background:#E9A23B"></i>人工确认 / 责任点</span>
+    <span><i class="dot" style="background:#C0504D"></i>痛点环节</span>
+  </div>
+  <ol class="flow">
+      <li class="step">
+        <div class="no">1</div>
+        <div class="body">
+          <div class="head"><span class="name">提交出差申请</span><span class="actor">出差人</span></div>
+          <div class="desc">OA 填写目的地、日期、预算；主管审批</div>
+        </div>
+        <div class="anno">审批通过后无标准提示，员工不知道住宿上限</div>
+      </li>
+      <li class="step">
+        <div class="no">2</div>
+        <div class="body">
+          <div class="head"><span class="name">消费并垫付</span><span class="actor">出差人</span></div>
+          <div class="desc">交通、住宿、餐饮全部个人垫款</div>
+        </div>
+        <div class="anno">平均垫款 4,200 元，回款 9.4 天</div>
+      </li>
+      <li class="step pain">
+        <div class="no">3</div>
+        <div class="body">
+          <div class="head"><span class="name">收集发票</span><span class="actor">出差人</span><span class="tag">痛点</span></div>
+          <div class="desc">酒店、高铁、打车、会议注册；抬头税号靠商家</div>
+        </div>
+        <div class="anno">抬头/税号错误率约 18%，当场发现不了</div>
+      </li>
+      <li class="step pain">
+        <div class="no">4</div>
+        <div class="body">
+          <div class="head"><span class="name">手工填单</span><span class="actor">出差人</span><span class="tag">痛点</span></div>
+          <div class="desc">在 OA 逐项录入，金额、科目、附件手工填</div>
+        </div>
+        <div class="anno">单均 28 分钟，跨 4 个系统；超标不自知</div>
+      </li>
+      <li class="step">
+        <div class="no">5</div>
+        <div class="body">
+          <div class="head"><span class="name">直属主管审批</span><span class="actor">主管</span></div>
+          <div class="desc">看事由与金额，难核对标准</div>
+        </div>
+        <div class="anno">主管也记不住分档标准，往往直接通过</div>
+      </li>
+      <li class="step pain">
+        <div class="no">6</div>
+        <div class="body">
+          <div class="head"><span class="name">财务初审</span><span class="actor">财务</span><span class="tag">痛点</span></div>
+          <div class="desc">核对发票、标准、查重、审批链</div>
+        </div>
+        <div class="anno">单均 11.5 分钟；63% 退单在此发生</div>
+      </li>
+      <li class="step pain">
+        <div class="no">7</div>
+        <div class="body">
+          <div class="head"><span class="name">退回补件</span><span class="actor">财务 ↔ 员工</span><span class="tag">痛点</span></div>
+          <div class="desc">电话/企微告知问题，员工重填重交</div>
+        </div>
+        <div class="anno">退回通知无具体条款；平均 1.7 次/单</div>
+      </li>
+      <li class="step">
+        <div class="no">8</div>
+        <div class="body">
+          <div class="head"><span class="name">财务复核与付款</span><span class="actor">财务</span></div>
+          <div class="desc">复核金额、科目、预算；出纳付款</div>
+        </div>
+        <div class="anno">无预审清单，重复劳动；付款排期固定</div>
+      </li>
+      <li class="step">
+        <div class="no">9</div>
+        <div class="body">
+          <div class="head"><span class="name">归档</span><span class="actor">财务</span></div>
+          <div class="desc">影像归档 5 年，按发票号可查</div>
+        </div>
+        <div class="anno">查重靠 Excel，跨表比对 20 分钟/天</div>
+      </li>
+  </ol>
+  <div class="note">读图说明：红色节点是“问题发生地”，不是“责任归属”。退单、超标、抬头错误都发生在提交前，但直到财务初审才被发现，这是现状流程最大的结构性浪费。典型事件 EV-2026-10-28-SH（张伟，5,600 元）正是沿着第 3→4→6→7 步走了 3 次：抬头错、税号错、住宿超标，12 天才到账。</div>
+</div>
+</body>
+</html>

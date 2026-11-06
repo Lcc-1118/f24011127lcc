@@ -27,3 +27,12 @@ Thumbs.db
 
 # 冒烟测试上传的制度文件（跑脚本会自动删，双保险）
 data/policies/smoke_*.md
+
+# 本地运行时/部署产物（不入库：数据库、PID、隧道日志、内网穿透二进制）
+deploy/data/*.db
+deploy/pid.txt
+deploy/*.log
+deploy/cloudflared.exe
+Test/_runtime/*.db
+Test/_runtime/pid_*.txt
+*.db-journal
